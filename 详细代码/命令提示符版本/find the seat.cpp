@@ -1,3 +1,6 @@
+
+
+#include "stdafx.h"  
 #include <stdio.h>  
 #include <stdlib.h>  
 #include <string.h>  
@@ -17,7 +20,7 @@ char *res_buf = NULL;
 int shift;
 int primer,p;
 const int m = 123;
-int evident[60][100];//测试数据保存数组
+//int evident[60][100];//测试数据保存数组
 const int position[20] = { 0,5,6,6,6,6,7,8,8,8,8,8,8,8,5,5,6,6,5,4 };
 char canteen[60][100] = {
 "                                           \n",
@@ -146,7 +149,9 @@ void get_data(tm *&data) {
 	data = localtime(&now);
 }
 int find_primer(tm *data,double stock) {
-	for (int i = data->tm_mday*stock/10;; ++i) {
+	int s = (int)((stock - (int)stock) * 100);
+	s = s == 0 ? stock : s;
+	for (int i = data->tm_mday*s/10;; ++i) {
 		int j;
 		for (j = 2; j < i / 2; ++j) {
 			if (i%j == 0) {
@@ -158,7 +163,7 @@ int find_primer(tm *data,double stock) {
 			break;
 		}
 	}
-	for (int i = data->tm_mday*data->tm_year*stock; i >= 2; --i) {
+	for (int i = data->tm_mday*data->tm_year*s; i >= 2; --i) {
 		int j;
 		for (j = 2; j < i / 2; ++j) {
 			if (i%j == 0) {
@@ -175,7 +180,7 @@ int find_primer(tm *data,double stock) {
 int get_a(tm *data,double s) {
 	int a;
 	int sum;
-	sum = data->tm_mday + data->tm_mon + data->tm_wday + data->tm_yday + data->tm_year+s;
+	sum = data->tm_mday + data->tm_mon + data->tm_wday + data->tm_yday + data->tm_year+ (int)((s - (int)s) * 100);
 	sum %= primer;
 	a = sum*sum;
 	return a;
@@ -184,7 +189,7 @@ int get_a(tm *data,double s) {
 int get_b(tm *data,double s) {
 	int b;
 	int sum;
-	sum = data->tm_mday * data->tm_mon * data->tm_wday * data->tm_yday * data->tm_year*s;
+	sum = data->tm_mday * data->tm_mon * data->tm_wday * data->tm_yday * data->tm_year*(int)((s-(int)s)*100);
 	sum %= primer;
 	b = sum*sum;
 	return b;
