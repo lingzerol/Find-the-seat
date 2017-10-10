@@ -10,7 +10,6 @@
 #include <iostream>
 
 #define POSTURL "https://gupiao.baidu.com/stock/hk00700.html?from=aladingpc"  
-#define FILEPATH "D:\\temp.txt"  
 
 
   
@@ -20,9 +19,9 @@ char *res_buf = NULL;
 int shift;
 int primer,p;
 const int m = 123;
-int evident[60][100];//测试数据保存数组
-const int position[20] = { 0,5,6,6,6,6,7,8,8,8,8,8,8,8,5,5,6,6,5,4 };
-char canteen[60][100] = {
+//int evident[60][100];//测试数据保存数组
+const int position[20] = { 0,5,6,6,6,6,7,8,8,8,8,8,8,8,5,5,6,6,5,4 };//每行座位数
+/*char canteen[60][100] = {
 "                                           \n",
 "                                           \n",
 "                                           \n",
@@ -84,7 +83,7 @@ char canteen[60][100] = {
 "                                           \n",
 "                                           \n",
 };
-
+*///命令提示符版本需要
 
 //这是libcurl接收数据的回调函数，相当于recv的死循环  
 //其中stream可以自定义数据类型，这里我传入的是文件保存路径  
@@ -98,7 +97,7 @@ static size_t write_callback(void *ptr, size_t size, size_t nmemb, void *stream)
 	shift += res_size;
 	return size * nmemb;
 }
-
+//获取http网页字符串
 
 int GetUrl(const char *url, char *savepath)
 {
@@ -123,10 +122,12 @@ int GetUrl(const char *url, char *savepath)
 	}
 
 	return 0;
-}
+}//获取http网页
+
+
 bool check(int i) {
 	return (res_buf[i] >= '0'&&res_buf[i] <= '9') && (res_buf[i + 1] >= '0'&&res_buf[i + 1] <= '9') && (res_buf[i + 2] >= '0'&&res_buf[i + 2] <= '9') && (res_buf[i + 3] == '.') && (res_buf[i + 4] >= '0'&&res_buf[i + 4] <= '9') && (res_buf[i + 5] >= '0'&&res_buf[i + 5] <= '9');
-}
+}//查找股价值
 
 bool get_stock(char *stock) {
 	int i, j;
@@ -142,12 +143,12 @@ bool get_stock(char *stock) {
 		return false;
 	}
 	else return true;
-}
+}//获取股价
 
 void get_data(tm *&data) {
 	time_t now=time(NULL);
 	data = localtime(&now);
-}
+}//获取日期
 int find_primer(tm *data,double stock) {
 	int s = (int)((stock - (int)stock) * 100);
 	s = s == 0 ? stock : s;
@@ -176,7 +177,9 @@ int find_primer(tm *data,double stock) {
 		}
 	}
 	return 0;
-}
+}//查找两个质数用于取模
+
+
 int get_a(tm *data,double s) {
 	int a;
 	int sum;
@@ -184,7 +187,7 @@ int get_a(tm *data,double s) {
 	sum %= primer;
 	a = sum*sum;
 	return a;
-}
+}//获取哈希函数的a值
 
 int get_b(tm *data,double s) {
 	int b;
@@ -193,17 +196,17 @@ int get_b(tm *data,double s) {
 	sum %= primer;
 	b = sum*sum;
 	return b;
-}
+}//获取哈希函数的b值
 
 int Hash(int x,tm *data,int a,int b) {
 	return (a*x + b) % p;
-}
+}//哈希函数
 
 int seat(int hash1, int hash2, int hash3, int hash4, int hash5) {
 	return (primer*(primer*(primer*(primer*hash1 + hash2)%m + hash3)%m + hash4)%m + hash5) % m;
-}
+}//求出座位值
 
-void output(double stock, tm *data, int s) {
+/*void output(double stock, tm *data, int s) {
 	int i, j;
 	printf("Today is: %d-%d-%d\n", data->tm_year + 1900, data->tm_mon + 1, data->tm_mday);
 	printf("The price of th tencent stock is: %.2lf\n", stock);
@@ -227,7 +230,8 @@ void output(double stock, tm *data, int s) {
 	canteen[i + 1][j + (j - 1) * 3] = ' ';
 	canteen[i][j + (j - 1) * 3 + 1] = ' ';
 
-}
+}*///命令提示符格式输出
+
 void web_output(double stock, tm *data, int s) {
 	int i, j;
 	//printf("Today is: %d-%d-%d\n", data->tm_year + 1900, data->tm_mon + 1, data->tm_mday);
@@ -257,9 +261,9 @@ void web_output(double stock, tm *data, int s) {
 	}
 	printf("</body>\n");
 	printf("</html>\n");
-}
+}//网页版本输出
 
-void test(double stock, tm *data) {
+/*void test(double stock, tm *data) {
 	int year, month, day, hash1, hash2, hash3, hash4, hash5, s;
 	int c, r;
 	int i, j;
@@ -283,7 +287,7 @@ void test(double stock, tm *data) {
 	}
 	j = s;
 	evident[i][j]++;
-}
+}*///用于用于样例测试
 
 void find_the_seat(double stock,tm *data) {
 	int year, month, day,hash1,hash2,hash3,hash4,hash5,s;
@@ -304,7 +308,7 @@ void find_the_seat(double stock,tm *data) {
 	s = seat(hash1, hash2, hash3, hash4, hash5);
 	//output(stock, data, s+1);
 	web_output(stock, data, s + 1);
-}
+}//查找座位
 
 int main()
 {	
