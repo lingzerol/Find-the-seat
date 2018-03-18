@@ -1,4 +1,4 @@
-# Find-the-seat.lalalala
+# Find-the-seat
 It is used to finding the seat where we met next time.
 
 这个c++程序用于找出下一次见面的地点。
